@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class ParagraphComputationItem {
-    int numberOfwords;
+    int numberOfWords;
     long processingTime;
 }

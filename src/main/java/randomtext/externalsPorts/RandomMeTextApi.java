@@ -19,7 +19,6 @@ public class RandomMeTextApi {
 
     public RandomText getRandomText(int numberOfParagraph, int minNumberOfWorldInParagraph, int maxNumberOfWorldInParagraph) {
 
-        //final String uri = "http://www.randomtext.me/api/giberish/p-3/2-5";
         final String uri = "http://www.randomtext.me/api/giberish/p-" + numberOfParagraph +
                 "/" + minNumberOfWorldInParagraph + "-" + maxNumberOfWorldInParagraph;
 

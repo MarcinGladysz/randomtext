@@ -32,8 +32,8 @@ public class RandomTextService {
 
 
     public Statistic getRandomTextMeStatistics(int startNumberOfParagraph, int endNumberOfParagraph,
-                                               int minNumberOfWordsinParagraph, int maxNumberOFWordsinParagraph) {
-        if (minNumberOfWordsinParagraph > maxNumberOFWordsinParagraph) {
+                                            int minNumberOfWordsInParagraph, int maxNumberOFWordsinParagraph) {
+        if (minNumberOfWordsInParagraph > maxNumberOFWordsinParagraph) {
             throw new IllegalArgumentException();
         }
 
@@ -41,23 +41,23 @@ public class RandomTextService {
 
         Statistic statistic = new Statistic();
 
-        ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, Integer> frequencyWordsMap = new ConcurrentHashMap<>();
 
         List<ParagraphComputationItem> paragraphComputations =
                 IntStream.range(startNumberOfParagraph, endNumberOfParagraph).parallel().boxed().flatMap(n -> {
-                    return generateOneItem(map, n, minNumberOfWordsinParagraph, maxNumberOFWordsinParagraph);
+                    return generateOneItem(frequencyWordsMap, n, minNumberOfWordsInParagraph, maxNumberOFWordsinParagraph);
                 }).collect(Collectors.toList());
 
 
-        statistic.setMostFrequentWord(getMostFrequentWordFromMap(map));
+        statistic.setMostFrequentWord(getMostFrequentWordFromMap(frequencyWordsMap));
         statistic.setAvrParagraphLength(paragraphComputations.stream().
-                collect(Collectors.averagingInt(ParagraphComputationItem::getNumberOfwords)).intValue());
+                collect(Collectors.averagingInt(ParagraphComputationItem::getNumberOfWords)).intValue());
         statistic.setAvrParagraphProcessingTime(paragraphComputations.stream().
                 collect(Collectors.averagingLong(ParagraphComputationItem::getProcessingTime)));
 
         long endTime = System.currentTimeMillis();
 
-        statistic.setTotalProcessingTime(endTime - startTime);
+        statistic.setTotalProcessingTime(endTime-startTime);
         return statistic;
     }
 
@@ -76,7 +76,7 @@ public class RandomTextService {
 
 
                     long endTime = System.currentTimeMillis();
-                    computationItem.setNumberOfwords(words.length);
+                    computationItem.setNumberOfWords(words.length);
                     computationItem.setProcessingTime(endTime - startTime);
                     return computationItem;
                 }
@@ -84,10 +84,10 @@ public class RandomTextService {
 
     }
 
-    private String[] splitParagraphToWords(String text_out) {
-        String s = Jsoup.parse(text_out).text();
+    private String[] splitParagraphToWords(String text) {
+        String textWithoutHtml = Jsoup.parse(text).text();
 
-        return s.split("\\W+");
+        return textWithoutHtml.split("\\W+");
 
     }
 
